@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     redis_url: str
     ollama_base_url: str
     ollama_model: str
+    llm_api_key: str = "ollama"
 
     model_config = {"env_file": ".env"}
 

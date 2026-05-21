@@ -22,12 +22,13 @@ async def get_agent(agent_id: str, db: AsyncSession) -> Agent | None:
         agent = result.scalar_one_or_none()
         if agent is None:
             return None
-        return {"id": agent.id, "name": agent.name, "persona": agent.persona}
+        return {"id": agent.id, "name": agent.name, "persona": agent.persona, "created_at": agent.created_at.isoformat()}
 
     data = await cache.find(f"persona:{agent_id}", fetcher=fetch_from_db)
     if data is None:
         return None
-    return Agent(id=data["id"], name=data["name"], persona=data["persona"])
+    from datetime import datetime
+    return Agent(id=data["id"], name=data["name"], persona=data["persona"], created_at=datetime.fromisoformat(data["created_at"]))
 
 
 async def get_agent_or_404(agent_id: str, db: AsyncSession = Depends(get_db)) -> Agent:

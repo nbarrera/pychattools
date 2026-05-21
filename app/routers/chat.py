@@ -26,7 +26,7 @@ async def chat(
     llm_messages += [{"role": m.role, "content": m.content} for m in messages]
     llm_messages.append({"role": "user", "content": payload.message})
 
-    reply = await llm_chat(llm_messages)
+    reply = await llm_chat(llm_messages, db=db)
 
     user_msg = Message(agent_id=agent_id, role="user", content=payload.message)
     assistant_msg = Message(agent_id=agent_id, role="assistant", content=reply)
