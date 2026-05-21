@@ -1,3 +1,4 @@
+import asyncio
 import json
 from openai import AsyncOpenAI, APIError
 
@@ -39,7 +40,9 @@ async def chat(messages: list[dict], db=None) -> str:
         print(f"[llm] content={msg.content!r}")
 
         if not msg.tool_calls:
-            return msg.content
+            if msg.content:
+                return msg.content
+            continue
 
         # append assistant message with tool calls
         history.append({
@@ -56,6 +59,7 @@ async def chat(messages: list[dict], db=None) -> str:
         })
 
         # execute each tool and append results
+        await asyncio.sleep(1)
         for tc in msg.tool_calls:
             args = json.loads(tc.function.arguments or "{}")
             result = await dispatch(tc.function.name, args, db)
